@@ -1,0 +1,57 @@
+[user]
+	name = Matt Geddes
+	email = matt.geddes@domo.com
+[core]
+	excludesfile = /Users/mattgeddes/.gitignore_global
+	editor = /usr/bin/vim
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[difftool "Kaleidoscope"]
+	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[diff]
+	tool = Kaleidoscope
+[difftool]
+	prompt = false
+[mergetool "Kaleidoscope"]
+	cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+	path = /usr/local/bin
+	trustExitCode = true
+[mergetool]
+	prompt = false
+	keepBackup = false
+[merge]
+	tool = Kaleidoscope
+[push]
+	default = simple
+[alias]
+  com = checkout master
+  co = checkout
+  st = status -s
+	sync = "!f() { echo \"$(tput setaf 4)Syncing this branch with origin master$(tput sgr 0)\" && git fetch origin master && git rebase origin/master && echo \"$(tput setaf 2)Branch sync successful$(tput sgr 0)\"; }; f"
+	ship = "!f() { echo \"$(tput setaf 4)Shipping this branch to master$(tput sgr 0)\" && git checkout master && (git merge --ff-only - || (echo \"$(tput setaf 1)Could not merge branch into local master\\nRun git sync before running this command\\nIf this error persists, you have local, un-pushed commits in your master branch\\nPush them to origin master or move them into a branch before running this command$(tput sgr 0)\"; git checkout -; return 1)) && (git push origin master || (echo \"$(tput setaf 1)Could not push branch\\nRun git sync before running this command$(tput sgr 0)\"; git reset --hard HEAD@{1}; git checkout -; return 1)) && echo \"$(tput setaf 2)Branch ship successful$(tput sgr 0)\"; }; f"
+  fixup = "!f() { git rebase -i $(git merge-base HEAD origin/master); }; f"
+	st = "status"
+	la = "!git config -l | grep alias | cut -c 7-"
+	chp = cherry-pick
+  ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cgreen\\ [%cn]" --decorate
+  ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+	plog = log --graph --decorate
+	dt = difftool
+	me = "!f() { git log  --author matt.geddes; }; f"
+	mep = "!f() { git log  -p --author matt.geddes; }; f"
+	fwl = push --force-with-lease
+  c = "commit -am cleanup"
+  cp = "commit -am checkpoint" 
+	newbranch = "!f() { git checkout -b users/mgeddes/$1 && git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD); }; f"
+	pull-request = "!f() { git push --force-with-lease origin HEAD:users/matt.geddes/$1; }; f"
+	create-remote = "!f() { git push origin origin:refs/heads/users/matt.geddes/$1; }; f"
+  pack = !sh -c 'git checkout package-lock.json'
+  cob = checkout -b
+  cm = !git add -A && git commit -m
+  pb = !sh -c 'git push -u origin $(git rev-parse --abbrev-ref HEAD)'
+  recent = "for-each-ref --count=10 --sort=-committerdate refs/heads/ --format='%(color:green)%(refname:short)\t%(color:reset)%(subject)'"
+
