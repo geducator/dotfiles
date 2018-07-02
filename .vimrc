@@ -1,6 +1,7 @@
 set expandtab
 set tabstop=2
 set number
+set backspace=indent,eol,start
 syntax on
 syntax enable
 set termguicolors
